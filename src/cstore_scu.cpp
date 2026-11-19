@@ -1,4 +1,6 @@
 #include "ohs/dimse/cstore_scu.hpp"
+#include "dcmtk/dcmdata/dctypes.h"
+#include "ohs/dimse/dicom_validator.hpp"
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
@@ -76,6 +78,13 @@ StoreResult CStoreScu::store_file(const std::string& dicom_path) {
   scu.setPeerPort(peer_.port);
   scu.setPeerAETitle(peer_.called_ae.c_str());
 
+  DicomValidator validator;
+  ValidationResult validation_result = validator.validate(dicom_path);
+  if (!validation_result.ok) {
+    result.message = "DICOM file is not valid";
+    result.dimse_status = 0x0001;
+    return result;
+  }
   // Uncompressed transfer syntaxes for Phase 1; compression prefs come later.
   OFList<OFString> uncompressed;
   uncompressed.push_back(UID_LittleEndianExplicitTransferSyntax);
@@ -98,7 +107,7 @@ StoreResult CStoreScu::store_file(const std::string& dicom_path) {
 
   OFList<OFFilename> files;
   files.push_back(OFFilename(dicom_path.c_str()));
-  cond = scu.addDicomFiles(files, OFFalse /* readFromDICOMDIR */, OFTrue /* check */);
+  cond = scu.addDicomFile(files.front(), ERM_fileOnly, OFTrue /* check */);
   if (cond.bad()) {
     result.message = std::string("addDicomFiles failed: ") + cond.text();
     return result;
@@ -113,7 +122,7 @@ StoreResult CStoreScu::store_file(const std::string& dicom_path) {
   cond = scu.negotiateAssociation();
   if (cond.bad()) {
     result.message = std::string("negotiateAssociation failed: ") + cond.text();
-    scu.dropNetwork();
+    scu.releaseAssociation();
     return result;
   }
 

@@ -41,6 +41,7 @@ message(STATUS "DCMTK libraries  = ${DCMTK_LIBRARY_DIR}")
 add_executable(dimse-engine
   src/main.cpp
   src/cstore_scu.cpp
+  src/dicom_validator.cpp
 )
 
 target_include_directories(dimse-engine

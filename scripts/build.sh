@@ -3,6 +3,7 @@
 # Does not compile DCMTK — expects shared libs already present under $DCMTK_LIB.
 set -euo pipefail
 
+export DCMTK_LIB=/home/abhijit/project/workspace-dcmtk/dcmtk/install
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BUILD_DIR="${BUILD_DIR:-${ROOT}/build}"
 

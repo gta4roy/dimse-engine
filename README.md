@@ -50,3 +50,19 @@ Binary: `build/dimse-engine` (rpath points at `$DCMTK_LIB/lib`).
 | `src/main.cpp` | Phase 1 CLI harness |
 | `scripts/build.sh` | CMake configure + build |
 | `CMakeLists.txt` | Links shared libs from `$DCMTK_LIB` |
+
+
+## Design Steps 
+
+1. one single image passed 
+2. multiple images passed 
+3. read images 
+4. Validate images are they dicom file or not 
+5. Get Network Credentials of the SCP IP , AETITLE , PORT 
+6. Perform dicom association 
+7. Prepare presenttion context 
+8. or use library methods to do so 
+9. set configurations for the association 
+10. dicom association 
+11. Cstore 
+12. dicom assoication release  

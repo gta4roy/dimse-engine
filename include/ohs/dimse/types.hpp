@@ -23,4 +23,10 @@ struct StoreResult {
   std::string message;
 };
 
+/// Outcome of reading and validating one DICOM image file.
+struct ValidationResult {
+  bool ok{false};
+  std::string message;
+};
+
 }  // namespace ohs::dimse
